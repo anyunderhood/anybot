@@ -1,9 +1,6 @@
 import { Octokit } from "@octokit/rest";
 
-import { TG_TOKEN, GH_TOKEN } from "./config";
-
-const repo = "anyunderhood";
-const owner = "anyunderhood";
+import { GH_TOKEN } from "./config";
 
 interface IAuthor {
     username: string;
@@ -11,14 +8,26 @@ interface IAuthor {
     post: boolean;
 }
 
-export default class GithubService {
-    constructor() {}
+export interface IUnderhood {
+    repo: string;
+    owner: string;
+}
 
-    public async addAuthor(branchName: string, author: IAuthor): Promise<string> {
+export default class GithubService {
+    constructor(underhood: null | IUnderhood) {
+        if (underhood === null) {
+            throw new Error("underhood not defined");
+        } else {
+            this.owner = underhood.owner;
+            this.repo = underhood.repo;
+        }
+    }
+
+    public async addAuthor(branchName: string, author: IAuthor): Promise<string | null> {
         try {
             const masterBranch = await this.client.repos.getBranch({
-                owner,
-                repo,
+                owner: this.owner,
+                repo: this.repo,
                 branch: "master",
             });
 
@@ -29,13 +38,18 @@ export default class GithubService {
             return prResponse.data.html_url;
         } catch (error) {
             console.log(error);
-            return "-";
+            return null;
         }
     }
 
     private async createBranch(branchName: string, sha: string) {
         const ref = `refs/heads/${branchName}`;
-        return await this.client.git.createRef({ owner, repo, ref, sha });
+        return await this.client.git.createRef({
+            owner: this.owner,
+            repo: this.repo,
+            ref,
+            sha,
+        });
     }
 
     private async updateFile(branchName: string, author: IAuthor) {
@@ -55,15 +69,15 @@ export default authorId([
         content = Buffer.from(content).toString("base64");
 
         const fileSha = await this.client.repos.getContents({
-            owner,
-            repo,
+            owner: this.owner,
+            repo: this.repo,
             path,
             ref: branchName,
         });
 
         return await this.client.repos.createOrUpdateFile({
-            owner,
-            repo,
+            owner: this.owner,
+            repo: this.repo,
             path,
             message,
             content,
@@ -78,8 +92,8 @@ export default authorId([
 
     private async createPr(head: string, title = "new author", base = "master") {
         return await this.client.pulls.create({
-            owner,
-            repo,
+            owner: this.owner,
+            repo: this.repo,
             title,
             head,
             base,
@@ -87,4 +101,6 @@ export default authorId([
     }
 
     private readonly client = new Octokit({ auth: GH_TOKEN });
+    private readonly owner: string = "";
+    private readonly repo: string = "";
 }

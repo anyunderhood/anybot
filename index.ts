@@ -1,38 +1,41 @@
 import * as TelegramBot from "node-telegram-bot-api";
 
-import { TG_TOKEN } from "./config";
-import GithubService from "./ghService";
+import { TG_TOKEN, buttons, text, underhood } from "./config";
+import GithubService, { IUnderhood } from "./ghService";
 
-const SEPARATOR = "::";
-const MASK = "twitter_author_id" + SEPARATOR + "first_post_id";
-const DEFAULT_RESP = `/add ${MASK}`;
-const INVALID_INPUT = `valid input: ${MASK}`;
-
-const gh = new GithubService();
 const bot = new TelegramBot(TG_TOKEN, { polling: true });
 
-bot.onText(/\/cmd/, (msg) => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, DEFAULT_RESP);
+let activeUnderhood: IUnderhood | null = null;
+
+bot.onText(/\/start/, (msg: any) => {
+    bot.sendMessage(msg.chat.id, text.start, {
+        reply_markup: { keyboard: buttons },
+    });
 });
 
-bot.onText(/\/add (.+)/, async (msg, match) => {
+bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
     const chatId = msg.chat.id;
 
-    if (match === null || !Boolean(match[1].indexOf(SEPARATOR) + 1)) {
-        bot.sendMessage(chatId, INVALID_INPUT);
+    if (activeUnderhood === null) {
+        bot.sendMessage(chatId, text.notSelected);
         return;
     }
 
-    const cmdValues = match[1].split(SEPARATOR);
+    if (match === null || !Boolean(match[1].indexOf(text.separator) + 1)) {
+        bot.sendMessage(chatId, text.invalid);
+        return;
+    }
+
+    const cmdValues = match[1].split(text.separator);
 
     if (cmdValues.length !== 2) {
-        bot.sendMessage(chatId, INVALID_INPUT);
+        bot.sendMessage(chatId, text.invalid);
         return;
     }
 
     const username = cmdValues[0];
     const first = cmdValues[1];
+    const gh = new GithubService(activeUnderhood);
 
     const prLink = await gh.addAuthor(`new_author_${Math.floor(Math.random() * 100)}`, {
         username,
@@ -40,5 +43,27 @@ bot.onText(/\/add (.+)/, async (msg, match) => {
         post: false,
     });
 
-    bot.sendMessage(chatId, `user: ${username} id: ${first}\ncheck PR: ${prLink}`);
+    const resp =
+        prLink === null
+            ? text.ghError
+            : `user: ${username} id: ${first}\ncheck PR: ${prLink}`;
+
+    bot.sendMessage(chatId, resp);
+});
+
+bot.onText(/\/active/, (msg: any) => {
+    const resp = activeUnderhood
+        ? text.selected + JSON.stringify(activeUnderhood)
+        : text.notSelected;
+    bot.sendMessage(msg.chat.id, resp);
+});
+
+bot.on("message", (msg: any) => {
+    console.log(msg.text.toString());
+    buttons.forEach((btn) => {
+        if (msg.text.toString().toLowerCase().indexOf(btn[0].toLocaleLowerCase()) === 0) {
+            activeUnderhood = underhood[btn[0]];
+            bot.sendMessage(msg.chat.id, text.selected + JSON.stringify(activeUnderhood));
+        }
+    });
 });

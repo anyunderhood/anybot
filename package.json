@@ -13,7 +13,6 @@
     "license": "ISC",
     "dependencies": {
         "@octokit/rest": "^17.9.2",
-        "@types/node-telegram-bot-api": "^0.40.3",
         "node-telegram-bot-api": "^0.50.0"
     },
     "devDependencies": {
