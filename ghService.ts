@@ -55,34 +55,33 @@ export default class GithubService {
     private async updateFile(branchName: string, author: IAuthor) {
         const path = "authors.js";
         const message = "new author";
-        let content = `
-import authorId from './helpers/author-id';
-export default authorId([
-{
-    username: '${author.username}',
-    first: '${author.first}',
-    post: ${author.post}
-},
-]);
-        `;
+        const newAuthor = `    { username: '${author.username}', first: '${author.first}', post: ${author.post} },`;
 
-        content = Buffer.from(content).toString("base64");
-
-        const fileSha = await this.client.repos.getContents({
+        const initFile = await this.client.repos.getContents({
             owner: this.owner,
             repo: this.repo,
             path,
             ref: branchName,
         });
 
+        const newRowIndex = 3; // always works?
+        const rows = Buffer.from(initFile.data.content, "base64")
+            .toString("ascii")
+            .split("\n");
+        const updRows = [
+            ...rows.slice(0, newRowIndex),
+            newAuthor,
+            ...rows.slice(newRowIndex),
+        ].join("\n");
+
         return await this.client.repos.createOrUpdateFile({
             owner: this.owner,
             repo: this.repo,
             path,
             message,
-            content,
+            content: Buffer.from(updRows).toString("base64"),
             branch: branchName,
-            sha: fileSha.data.sha,
+            sha: initFile.data.sha,
             committer: {
                 name: "tgkd",
                 email: "pavtrof342@gmail.com",

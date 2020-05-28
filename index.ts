@@ -59,7 +59,6 @@ bot.onText(/\/active/, (msg: any) => {
 });
 
 bot.on("message", (msg: any) => {
-    console.log(msg.text.toString());
     buttons.forEach((btn) => {
         if (msg.text.toString().toLowerCase().indexOf(btn[0].toLocaleLowerCase()) === 0) {
             activeUnderhood = underhood[btn[0]];
