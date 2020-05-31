@@ -4,7 +4,7 @@ export const GH_TOKEN = process.env.GH_TOKEN;
 export const buttons: string[][] = [["mobile"], ["product"], ["test"]];
 export const underhood: { [key: string]: { repo: string; owner: string } } = {
     mobile: { owner: "mobileunderhood", repo: "mobileunderhood" },
-    prod: { owner: "produnderhood", repo: "produnderhood" },
+    product: { owner: "produnderhood", repo: "produnderhood" },
     test: { owner: "anyunderhood", repo: "anyunderhood" },
 };
 
