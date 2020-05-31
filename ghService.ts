@@ -33,7 +33,7 @@ export default class GithubService {
 
             await this.createBranch(branchName, masterBranch.data.commit.sha);
             await this.updateFile(branchName, author);
-            const prResponse = await this.createPr(branchName);
+            const prResponse = await this.createPr(branchName, ghConfig.prTitle(author.username));
 
             return prResponse.data.html_url;
         } catch (error) {
@@ -85,7 +85,7 @@ export default class GithubService {
         });
     }
 
-    private async createPr(head: string, title = ghConfig.prTitle, base = "master") {
+    private async createPr(head: string, title: string, base = "master") {
         return await this.client.pulls.create({
             owner: this.owner,
             repo: this.repo,
