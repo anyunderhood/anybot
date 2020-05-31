@@ -1,6 +1,6 @@
 import { Octokit } from "@octokit/rest";
 
-import { GH_TOKEN } from "./config";
+import { GH_TOKEN, ghConfig } from "./config";
 
 interface IAuthor {
     username: string;
@@ -54,7 +54,6 @@ export default class GithubService {
 
     private async updateFile(branchName: string, author: IAuthor) {
         const path = "authors.js";
-        const message = "new author";
         const newAuthor = `    { username: '${author.username}', first: '${author.first}', post: ${author.post} },`;
 
         const initFile = await this.client.repos.getContents({
@@ -78,18 +77,15 @@ export default class GithubService {
             owner: this.owner,
             repo: this.repo,
             path,
-            message,
+            message: ghConfig.prMessage,
             content: Buffer.from(updRows).toString("base64"),
             branch: branchName,
             sha: initFile.data.sha,
-            committer: {
-                name: "tgkd",
-                email: "pavtrof342@gmail.com",
-            },
+            committer: ghConfig.committer,
         });
     }
 
-    private async createPr(head: string, title = "new author", base = "master") {
+    private async createPr(head: string, title = ghConfig.prTitle, base = "master") {
         return await this.client.pulls.create({
             owner: this.owner,
             repo: this.repo,

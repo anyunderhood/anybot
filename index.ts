@@ -1,6 +1,6 @@
 import * as TelegramBot from "node-telegram-bot-api";
 
-import { TG_TOKEN, buttons, text, underhood } from "./config";
+import { TG_TOKEN, buttons, text, underhood, ghConfig } from "./config";
 import GithubService, { IUnderhood } from "./ghService";
 
 const bot = new TelegramBot(TG_TOKEN, { polling: true });
@@ -36,8 +36,9 @@ bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
     const username = cmdValues[0];
     const first = cmdValues[1];
     const gh = new GithubService(activeUnderhood);
+    const branchName = `${ghConfig.branchName}/${username}-${first}`;
 
-    const prLink = await gh.addAuthor(`new_author_${Math.floor(Math.random() * 100)}`, {
+    const prLink = await gh.addAuthor(branchName, {
         username,
         first,
         post: false,
