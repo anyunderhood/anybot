@@ -22,9 +22,10 @@ export const text = {
 };
 
 export const ghConfig = {
-    branchName: "update_bot",
-    prMessage: "",
-    prTitle: "New Author",
+    branchFolder: `update-bot`,
+    branchName: (author: string, first: string) => `${author}-${first.substring(0,6)}`,
+    prMessage: "#update",
+    prTitle: (author: string) => `Add Author. ${author}`,
     committer: {
         name: "AgapovOne",
         email: "agapov.one@gmail.com",
