@@ -36,7 +36,7 @@ bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
     const username = cmdValues[0];
     const first = cmdValues[1];
     const gh = new GithubService(activeUnderhood);
-    const branchName = `${ghConfig.branchFolder}/${ghConfig.branchName(username, first)}`;
+    const branchName = `${ghConfig.branchFolder}/${ghConfig.branchName(username)}`;
 
     const prLink = await gh.addAuthor(branchName, {
         username,

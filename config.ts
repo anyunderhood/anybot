@@ -23,7 +23,7 @@ export const text = {
 
 export const ghConfig = {
     branchFolder: `update-bot`,
-    branchName: (author: string, first: string) => `${author}-${first.substring(0,6)}`,
+    branchName: (author: string) => `${author}-${Math.floor(Math.random() * 1000000)}`,
     commitMessage: "Update authors.js",
     prMessage: "#update",
     prTitle: (author: string) => `Add Author. ${author}`,
