@@ -14,21 +14,21 @@ const mask = "twitter_author_id" + separator + "first_post_id";
 export const text = {
     separator,
     mask,
-    start: "underhood?",
-    invalid: `valid input: \`${mask}\``,
-    selected: "active underhood repo: ",
-    notSelected: "select underhood pls",
+    start: "Select underhood!",
+    invalid: `Valid input: \`${mask}\``,
+    selected: "Active underhood repo: ",
+    notSelected: "Select underhood pls",
     ghError: "GitHub error. Check logs",
 };
 
 export const ghConfig = {
-    branchFolder: `update-bot`,
+    branchFolder: `anybot`,
     branchName: (author: string) => `${author}-${Math.floor(Math.random() * 1000000)}`,
     commitMessage: "Update authors.js",
     prMessage: "#update",
     prTitle: (author: string) => `Add Author. ${author}`,
     committer: {
-        name: "AgapovOne",
-        email: "agapov.one@gmail.com",
+        name: "anybot",
+        email: "anybot@anyunderhood",
     },
 };
