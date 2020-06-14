@@ -53,7 +53,7 @@ export default class GithubService {
 
     private async updateFile(branchName: string, author: IAuthor) {
         const path = "authors.js";
-        const newAuthor = `    { username: '${author.username}', first: '${author.first}' },`;
+        const newAuthor = `  { username: '${author.username}', first: '${author.first}' },`;
 
         const initFile = await this.client.repos.getContents({
             owner: this.owner,

@@ -27,6 +27,7 @@ export const ghConfig = {
     commitMessage: "Update authors.js",
     prMessage: "#update",
     prTitle: (author: string) => `Add Author. ${author}`,
+    prCreationResponse: (username: string, first: string, prLink: string) => `user: ${username} id: ${first}\ncheck PR: ${prLink}`,
     committer: {
         name: "anybot",
         email: "anybot@anyunderhood",

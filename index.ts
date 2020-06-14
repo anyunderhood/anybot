@@ -46,7 +46,7 @@ bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
     const resp =
         prLink === null
             ? text.ghError
-            : `user: ${username} id: ${first}\ncheck PR: ${prLink}`;
+            : ghConfig.prCreationResponse(username, first, prLink)
 
     bot.sendMessage(chatId, resp);
 });
