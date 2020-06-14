@@ -24,6 +24,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build
-    - run: scp -r build root:{{DEPLOY_PASSWORD}}@104.248.143.252:/home/tgkd/anybot/anybot
+    - run: scp -r build root:$DEPLOY_PASSWORD@104.248.143.252:/home/tgkd/anybot/anybot
       env:
         DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
