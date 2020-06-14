@@ -5,7 +5,6 @@ import { GH_TOKEN, ghConfig } from "./config";
 interface IAuthor {
     username: string;
     first: string;
-    post: boolean;
 }
 
 export interface IUnderhood {
@@ -54,7 +53,7 @@ export default class GithubService {
 
     private async updateFile(branchName: string, author: IAuthor) {
         const path = "authors.js";
-        const newAuthor = `    { username: '${author.username}', first: '${author.first}', post: ${author.post} },`;
+        const newAuthor = `    { username: '${author.username}', first: '${author.first}' },`;
 
         const initFile = await this.client.repos.getContents({
             owner: this.owner,
@@ -63,7 +62,7 @@ export default class GithubService {
             ref: branchName,
         });
 
-        const newRowIndex = 3; // always works?
+        const newRowIndex = 8; // always works?
         const rows = Buffer.from(initFile.data.content, "base64")
             .toString("ascii")
             .split("\n");
@@ -77,7 +76,7 @@ export default class GithubService {
             owner: this.owner,
             repo: this.repo,
             path,
-            message: ghConfig.prMessage,
+            message: ghConfig.commitMessage,
             content: Buffer.from(updRows).toString("base64"),
             branch: branchName,
             sha: initFile.data.sha,
@@ -90,6 +89,7 @@ export default class GithubService {
             owner: this.owner,
             repo: this.repo,
             title,
+            body: ghConfig.prMessage,
             head,
             base,
         });

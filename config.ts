@@ -24,6 +24,7 @@ export const text = {
 export const ghConfig = {
     branchFolder: `update-bot`,
     branchName: (author: string, first: string) => `${author}-${first.substring(0,6)}`,
+    commitMessage: "Update authors.js",
     prMessage: "#update",
     prTitle: (author: string) => `Add Author. ${author}`,
     committer: {

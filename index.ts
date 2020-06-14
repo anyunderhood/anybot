@@ -40,8 +40,7 @@ bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
 
     const prLink = await gh.addAuthor(branchName, {
         username,
-        first,
-        post: false,
+        first
     });
 
     const resp =
