@@ -24,6 +24,12 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     - run: npm run build
-    - run: scp -r build root:$DEPLOY_PASSWORD@104.248.143.252:/home/tgkd/anybot/anybot
-      env:
-        DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+    - name: copy file via ssh password
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.DEPLOY_PASSWORD }}
+        source: "build"
+        target: "/home/tgkd/anybot/anybot"
+
