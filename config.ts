@@ -1,5 +1,6 @@
 export const TG_TOKEN = process.env.TG_TOKEN;
 export const GH_TOKEN = process.env.GH_TOKEN;
+export const PWD = process.env.BOT_PWD;
 
 export const buttons: string[][] = [["mobile"], ["product"], ["test"]];
 export const underhood: { [key: string]: { repo: string; owner: string } } = {
@@ -16,6 +17,7 @@ export const text = {
     mask,
     start: "Select underhood!",
     invalid: `Valid input: \`${mask}\``,
+    invalidPwd: 'incorrect password',
     selected: "Active underhood repo: ",
     notSelected: "Select underhood pls",
     ghError: "GitHub error. Check logs",
