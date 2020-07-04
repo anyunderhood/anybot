@@ -10,7 +10,7 @@ export const underhood: { [key: string]: { repo: string; owner: string } } = {
 };
 
 const separator = ";";
-const mask = "twitter_author_id" + separator + "first_post_id";
+const mask = "twitter_author_id" + separator + "first_post_id" + separator + "password";
 
 export const text = {
     separator,
