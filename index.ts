@@ -1,6 +1,6 @@
 import * as TelegramBot from "node-telegram-bot-api";
 
-import { TG_TOKEN, buttons, text, underhood, ghConfig } from "./config";
+import { TG_TOKEN, buttons, text, underhood, ghConfig, PWD } from "./config";
 import GithubService, { IUnderhood } from "./ghService";
 
 const bot = new TelegramBot(TG_TOKEN, { polling: true });
@@ -28,8 +28,13 @@ bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
 
     const cmdValues = match[1].split(text.separator);
 
-    if (cmdValues.length !== 2) {
+    if (cmdValues.length !== 3) {
         bot.sendMessage(chatId, text.invalid);
+        return;
+    }
+
+    if (cmdValues[2] !== PWD) {
+        bot.sendMessage(chatId, text.invalidPwd);
         return;
     }
 
@@ -40,13 +45,13 @@ bot.onText(/\/add (.+)/, async (msg: any, match: any) => {
 
     const prLink = await gh.addAuthor(branchName, {
         username,
-        first
+        first,
     });
 
     const resp =
         prLink === null
             ? text.ghError
-            : ghConfig.prCreationResponse(username, first, prLink)
+            : ghConfig.prCreationResponse(username, first, prLink);
 
     bot.sendMessage(chatId, resp);
 });
